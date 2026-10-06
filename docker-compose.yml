@@ -1,0 +1,22 @@
+services:
+  usenetspy:
+    build: .
+    image: usenetspy:local
+    container_name: usenetspy
+    # Lets it look inside other containers' network namespaces (read-only checks).
+    pid: host
+    privileged: true
+    # Needs no network of its own; every check runs inside the watched namespaces.
+    network_mode: none
+    environment:
+      # Containers are found automatically by name/image. To list them yourself instead,
+      # set CONTAINERS, e.g. CONTAINERS: "nzbdav usenet-ultimate"
+      MATCH: "nzbdav|usenet|ultimate|sabnzbd|nzbget|gluetun|altmount|decypharr"
+      CONTAINERS: ""
+      NNTP_PORTS: "563 119"
+      INTERVAL: "2"
+      IP_CHECK_EVERY: "60"
+      MODE: "log"            # `docker compose up -d` keeps a change log; see README for the live view
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    restart: "no"
